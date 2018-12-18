@@ -1,0 +1,98 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>Mystery of Antiques</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- <link rel="apple-touch-icon" href="apple-touch-icon.png"> -->
+	<link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+	<style type="text/css">
+	</style>
+</head>
+
+<body>
+	<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+		<a class="navbar-brand" href="#">古董局中局</a>
+	</nav>
+	<main role="main" class="container">
+		<div class="jumbotron">
+			<h1>选择模式</h1>
+			<p class="lead"></p>
+			<a class="btn btn-lg btn-primary" href="{% url 'MoA:CreateGame' %}" role="button">创建游戏</a>
+			<button class="btn btn-lg btn-info" role="button" data-toggle="modal" data-target="#gameModal">加入游戏</button>
+			<button class="btn btn-lg btn-warning" role="button" data-toggle="modal" data-target="#playerModal">恢复角色</button>
+		</div>
+	</main>
+	<!-- Modal -->
+	<div class="modal fade" id="gameModal" tabindex="-1" role="dialog" aria-labelledby="gameModal" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">加入房间</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form method="POST" action="{% url 'MoA:SetupGame' %}" id="fmGame">
+						{% csrf_token %}
+						<div class="form-group row">
+							<label for="room_id" class="col-sm-4 col-form-label">房间号码：</label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control-plaintext" id="room_id" name="room_id" placeholder="12345" value="" required>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" id="join">加入</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal -->
+	<div class="modal fade" id="playerModal" tabindex="-1" role="dialog" aria-labelledby="playerModal" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">恢复角色</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form method="POST" action="{% url 'MoA:RecoverPlayer' %}" id="fmPlayer">
+						{% csrf_token %}
+						<div class="form-group row">
+							<label for="room_id" class="col-sm-4 col-form-label">玩家ID：</label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control-plaintext" id="player_code" name="player_code" placeholder="123" value="" required>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" id="recover">恢复</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+	<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+	<script type="text/javascript">
+	$(function() {
+		$("#join").click(function() {
+			$("#fmGame").submit();
+		});
+		$("#recover").click(function() {
+			$("#fmPlayer").submit();
+		});
+	});
+	</script>
+</body>
+
+</html>

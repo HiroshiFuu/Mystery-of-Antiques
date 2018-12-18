@@ -1,0 +1,233 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>Mystery of Antiques</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- <link rel="apple-touch-icon" href="apple-touch-icon.png"> -->
+	<link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+	<link rel="stylesheet" href="{% static 'plugin/form-wizard/wizard.css' %}">
+	<link rel="stylesheet" href="{% static 'css/radioselector.css' %}">
+	<style type="text/css">
+	.panel.movingIn {
+		z-index: 9;
+	}
+
+	.radioMethod .fa {
+		position: absolute;
+		color: #4A79A3;
+		padding: 1px;
+		top: -10px;
+		right: -10px;
+		display: none;
+	}
+
+	.radioMethod.checked .fa {
+		display: block !important;
+		z-index: 9;
+	}
+	</style>
+</head>
+
+<body>
+	<div class="wrapper">
+		<div id="wizard" class="wizard">
+			<div class="wizard__content">
+				<header class="wizard__header">
+					<div class="wizard__header-overlay"></div>
+					<div class="wizard__header-content">
+						<h1 class="wizard__title" >房间号码：{{ room_id }}</h1>
+						<p class="wizard__subheading"></p>
+					</div>
+					<div class="wizard__steps">
+						<nav class="steps">
+							<div class="step">
+								<div class="step__content">
+									<p class="step__number"><i class="fab fa-github-alt"></i></p>
+									<svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+										<circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+										<path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+									</svg>
+									<div class="lines">
+										<div class="line -start">
+										</div>
+										<div class="line -background">
+										</div>
+										<div class="line -progress">
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="step">
+								<div class="step__content">
+									<p class="step__number"><i class="fas fa-book"></i></p>
+									<svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+										<circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+										<path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+									</svg>
+									<div class="lines">
+										<div class="line -background">
+										</div>
+										<div class="line -progress">
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="step">
+								<div class="step__content">
+									<p class="step__number"><i class="fab fa-angellist"></i></p>
+									<svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+										<circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+										<path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+									</svg>
+									<div class="lines">
+										<div class="line -background">
+										</div>
+										<div class="line -progress">
+										</div>
+									</div>
+								</div>
+							</div>
+						</nav>
+					</div>
+				</header>
+				<div class="panels">
+					<div class="panel">
+						<header class="panel__header">
+							<h2 class="panel__title">请输入你的名字：</h2>
+							<p class="panel__subheading"></p>
+						</header>
+						<p class="panel__content"></p>
+						<input type="text" name="name" id="name" autocomplete="off" placeholder="名字" value="{{ player.name }}">
+						<button type="button" class="btn btn-success" id="btnName">确定</button>
+					</div>
+					<div class="panel">
+						<header class="panel__header">
+							<h2 class="panel__title">你的玩家ID是： <b>{{ player.player_code }}</b> </h2>
+							<p class="panel__subheading"></p>
+						</header>
+						<p class="panel__content">请牢记！！！！！</p>
+					</div>
+					<div class="panel">
+						<header class="panel__header">
+							<h2 class="panel__title">你的角色是： <b>{{ player.character.get_name_display }}</b> </h2>
+							<p class="panel__subheading"></p>
+						</header>
+						<p class="panel__content"><b>技能：</b>{{ player.character.skill_description }}</p>
+					</div>
+				</div>
+				<div class="wizard__footer">
+					<button class="button previous disabled">Previous</button>
+					<button class="button next disabled" id="btnNext">Next</button>
+				</div>
+			</div>
+			<h1 class="wizard__congrats-message" style="display: none;">
+				<div class="radioWrap">
+					<div class="btn-group radioBtnGroup btn-group-justified" data-toggle="buttons">
+						{% for color in colors %}
+						<label class="radioMethod" data-color="{{ color }}">
+							<i class="fa fa-check hidden"></i>
+							<div class="method {% if color == 'Black' %} character-white {% else %} character {% endif %}" style="background-color: {{ color }}"></div>
+						</label>
+						{% if forloop.counter == 4 %}
+						</div>
+						<div class="btn-group radioBtnGroup btn-group-justified" data-toggle="buttons">
+						{% endif %}
+						{% endfor %}
+					</div>
+				</div>
+				你是{{ player.get_color_display }}色玩家。。
+			</h1>
+		</div>
+	</div>
+	<form id="fm" method="POST" action="">
+		{% csrf_token %}
+		<input type="hidden" class="form-control-plaintext" name="room_id" placeholder="00000" value="{{ room_id }}" required>
+	</form>
+	<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+	<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/cookie.js' %}"></script>
+	<script src="{% static 'plugin/form-wizard/wizard.js' %}"></script>
+	<script type="text/javascript">
+	function wizard_completed() {
+		$("h1[class='wizard__congrats-message']").css("display", "");
+		// $("[data-color='{{ player.color }}']").addClass("checked");
+		setInterval(function() {
+			$(".radioMethod").removeClass("active");
+			$(".radioMethod").removeClass("checked");
+			$.ajax({
+				url: "{% url 'MoA:GetConnectedPlayerColors' %}",
+				type: "POST",
+				data: {
+					"room_id": "{{ room_id }}",
+				},
+				success: function(result) {
+					// alert(result);
+					result.forEach(function(color) {
+						$("[data-color='" + color + "']").addClass("active");
+					});
+				}
+			});
+			$.ajax({
+				url: "{% url 'MoA:IamAlive' %}",
+				type: "POST",
+				data: {
+					"player_code": "{{ player.player_code }}",
+				},
+				success: function(result) {
+					// alert(result);
+				}
+			});
+			$.ajax({
+				url: "{% url 'MoA:GetAlivePlayerColors' %}",
+				type: "POST",
+				data: {
+					"room_id": "{{ room_id }}",
+				},
+				success: function(result) {
+					// alert(result);
+					result.forEach(function(color) {
+						// console.log(player);
+						$("[data-color='" + color + "']").addClass("checked");
+					});
+				}
+			});
+		}, 5000);
+	}
+	$(function() {
+		var wizardElement = document.getElementById("wizard");
+		var wizard = new Wizard(wizardElement, wizard_completed);
+		var buttonNext = document.querySelector(".next");
+		var buttonPrevious = document.querySelector(".previous");
+		$("#btnName").click(function() {
+			$.ajax({
+				url: "{% url 'MoA:SetPlayerName' %}",
+				type: "POST",
+				data: {
+					"name": $("#name").val(),
+				},
+				success: function(result) {
+					// alert(result);
+					wizard.addControls(buttonPrevious, buttonNext);
+					buttonNext.click();
+					buttonNext.classList.remove("disabled");
+					$("#btnName").text("修改");
+					$("#name").val(result);
+				}
+			});
+		}); 
+		{% if player.name %}
+			$("#btnNext").removeClass("disabled");
+			$("#btnName").text("修改");
+			wizard.addControls(buttonPrevious, buttonNext); 
+		{% endif %}
+	});
+	</script>
+</body>
+
+</html>
