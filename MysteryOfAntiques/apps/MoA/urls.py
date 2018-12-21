@@ -13,6 +13,8 @@ urlpatterns = [
     url(r'^GetConnectedPlayerColors/$', views.GetConnectedPlayerColors, name='GetConnectedPlayerColors'),
     url(r'^IamAlive/$', views.IamAlive, name='IamAlive'),
     url(r'^GetAlivePlayerColors/$', views.GetAlivePlayerColors, name='GetAlivePlayerColors'),
+    url(r'^ImAliveGetAlive/$', views.ImAliveGetAlive, name='ImAliveGetAlive'),
     url(r'^GameMoA/$', views.GameMoA, name='GameMoA'),
+    url(r'^GetNextPlay/$', views.GetNextPlay, name='GetNextPlay'),
     url(r'^EndGame/$', views.EndGame, name='EndGame'),
 ]

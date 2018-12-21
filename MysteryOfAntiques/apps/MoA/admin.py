@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Game, Player, Character
+from .models import Game, Player, PlayerAction, Character, ZodiacImage, Zodiac
 
 # Register your models here.
 @admin.register(Game)
@@ -18,9 +18,23 @@ class PlayerAdmin(admin.ModelAdmin):
 		'name',
 		'color',
 		'player_code',
+		'sequence',
+		'step',
 		'game',
+		'character',
 		'modified_at',
 		'is_alive',
+	]
+
+
+@admin.register(PlayerAction)
+class PlayerActionAdmin(admin.ModelAdmin):
+	list_display = [
+		'skill_used',
+		'character',
+		'player',
+		'game',
+		'created_at',
 	]
 
 
@@ -29,4 +43,23 @@ class CharacterAdmin(admin.ModelAdmin):
 	list_display = [
 		'name',
 		'skill_description',
+	]
+
+
+@admin.register(ZodiacImage)
+class ZodiacImageAdmin(admin.ModelAdmin):
+	list_display = [
+		'name',
+		'image_tag',
+	]
+
+
+@admin.register(Zodiac)
+class ZodiacAdmin(admin.ModelAdmin):
+	list_display = [
+		'game',
+		'name',
+		'genuine',
+		'sequence',
+		'status',
 	]

@@ -141,13 +141,13 @@
 						{% endfor %}
 					</div>
 				</div>
-				你是{{ player.get_color_display }}色玩家。。
+				你是{{ player.get_color_display }}色玩家！ <br /> 房间号：{{ room_id }} <br /> 玩家ID：{{ player.player_code }} <br /> 请牢记！！！
 			</h1>
 		</div>
 	</div>
-	<form id="fm" method="POST" action="">
+	<form id="fm" method="POST" action="{% url 'MoA:GameMoA' %}">
 		{% csrf_token %}
-		<input type="hidden" class="form-control-plaintext" name="room_id" placeholder="00000" value="{{ room_id }}" required>
+		<input type="hidden" class="form-control-plaintext" name="room_id" value="{{ room_id }}">
 	</form>
 	<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
 	<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
@@ -155,11 +155,58 @@
 	<script src="{% static 'plugin/form-wizard/wizard.js' %}"></script>
 	<script type="text/javascript">
 	function wizard_completed() {
+		console.log("wizard_completed");
 		$("h1[class='wizard__congrats-message']").css("display", "");
-		// $("[data-color='{{ player.color }}']").addClass("checked");
 		setInterval(function() {
 			$(".radioMethod").removeClass("active");
 			$(".radioMethod").removeClass("checked");
+			$.ajax({
+				url: "{% url 'MoA:ImAliveGetAlive' %}",
+				type: "POST",
+				data: {
+					"player_code": "{{ player.player_code }}",
+					"room_id": "{{ room_id }}",
+				},
+				success: function(result) {
+					// alert(result);
+					var ready_player_cout = 0;
+					result.forEach(function(color) {
+						$("[data-color='" + color + "']").addClass("checked");
+						ready_player_cout++;
+					});
+					if (ready_player_cout == 3) {
+						$("#fm").submit();
+					}
+				}
+			});
+			// $.ajax({
+			// 	url: "{% url 'MoA:IamAlive' %}",
+			// 	type: "POST",
+			// 	data: {
+			// 		"player_code": "{{ player.player_code }}",
+			// 	},
+			// 	success: function(result) {
+			// 		// alert(result);
+			// 	}
+			// });
+			// $.ajax({
+			// 	url: "{% url 'MoA:GetAlivePlayerColors' %}",
+			// 	type: "POST",
+			// 	data: {
+			// 		"room_id": "{{ room_id }}",
+			// 	},
+			// 	success: function(result) {
+			// 		// alert(result);
+			// 		var ready_player_cout = 0;
+			// 		result.forEach(function(color) {
+			// 			$("[data-color='" + color + "']").addClass("checked");
+			// 			ready_player_cout++;
+			// 		});
+			// 		if (ready_player_cout == 3) {
+			// 			$("#fm").submit();
+			// 		}
+			// 	}
+			// });
 			$.ajax({
 				url: "{% url 'MoA:GetConnectedPlayerColors' %}",
 				type: "POST",
@@ -170,30 +217,6 @@
 					// alert(result);
 					result.forEach(function(color) {
 						$("[data-color='" + color + "']").addClass("active");
-					});
-				}
-			});
-			$.ajax({
-				url: "{% url 'MoA:IamAlive' %}",
-				type: "POST",
-				data: {
-					"player_code": "{{ player.player_code }}",
-				},
-				success: function(result) {
-					// alert(result);
-				}
-			});
-			$.ajax({
-				url: "{% url 'MoA:GetAlivePlayerColors' %}",
-				type: "POST",
-				data: {
-					"room_id": "{{ room_id }}",
-				},
-				success: function(result) {
-					// alert(result);
-					result.forEach(function(color) {
-						// console.log(player);
-						$("[data-color='" + color + "']").addClass("checked");
 					});
 				}
 			});
