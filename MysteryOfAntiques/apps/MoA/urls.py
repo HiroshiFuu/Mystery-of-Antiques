@@ -16,5 +16,7 @@ urlpatterns = [
     url(r'^ImAliveGetAlive/$', views.ImAliveGetAlive, name='ImAliveGetAlive'),
     url(r'^GameMoA/$', views.GameMoA, name='GameMoA'),
     url(r'^GetNextPlay/$', views.GetNextPlay, name='GetNextPlay'),
+    url(r'^SetNextPlayer/$', views.SetNextPlayer, name='SetNextPlayer'),
+    url(r'^StartBB/$', views.StartBB, name='StartBB'),
     url(r'^EndGame/$', views.EndGame, name='EndGame'),
 ]

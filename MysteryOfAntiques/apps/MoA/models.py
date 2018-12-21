@@ -18,6 +18,11 @@ en_formats.TIME_FORMAT = "H:i:s"
 
 # Create your models here.
 class Game(AuditMixin, models.Model):
+	class Meta:
+		# 	verbose_name = '玩家'
+		# 	verbose_name_plural = '玩家'
+		ordering = ['-created_at',]
+
 	room_id = models.PositiveSmallIntegerField(
 		unique=True, help_text="Room Number", verbose_name='Room ID')
 	stage = models.PositiveSmallIntegerField(default=-1)
@@ -75,12 +80,12 @@ class Player(SlugMixin, AuditMixin, models.Model):
 		# 	verbose_name = '玩家'
 		# 	verbose_name_plural = '玩家'
 		unique_together = (('game', 'color'), ('game', 'character'))
-		ordering = ['sequence']
+		ordering = ['game', 'color']
 
 	name = models.CharField(max_length=255)
 	player_code = models.PositiveSmallIntegerField(unique=True, help_text="Player Code", verbose_name='Player Code')
 	color = models.CharField(max_length=7, choices=COLOR_CHOICES, null=True)
-	sequence = models.PositiveSmallIntegerField(null=True)
+	sequence = models.PositiveSmallIntegerField(default=100)
 	step = models.PositiveSmallIntegerField(default=0)
 	game = models.ForeignKey(Game, models.CASCADE, related_name='players')
 	character = models.ForeignKey(Character, models.PROTECT, verbose_name='Character')

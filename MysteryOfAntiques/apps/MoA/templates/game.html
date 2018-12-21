@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
 	<link rel="stylesheet" href="{% static 'css/radioselector.css' %}">
 	<style type="text/css">
-	img {
+	img.js-avatar-me {
 		margin: 15px 10px 15px 10px;
 	}
 
@@ -21,60 +21,34 @@
 		display: none;
 	}
 
-	.radioMethod {
-		padding: 50px;
-		box-shadow: none;
-		position: relative;
-		margin: auto;
-	}
-
-	.radioMethod.active {
-		outline: none !important;
-	}
-
-	.radioMethod.active .method {
-		border-color: #4cd264;
-		outline: none !important;
-		box-shadow: 0px 5px 24px 0px #7b7b7b;
-	}
-
-	.radioMethod .method {
+	.dim {
+		opacity: .4;
 		position: absolute;
-		right: 3px;
-		top: 3px;
-		bottom: 3px;
-		left: 3px;
-		background-size: contain;
-		background-position: center;
-		background-repeat: no-repeat;
-		border: 2px solid white;
-		transition: all 0.5s;
-	}
-
-	.radioMethod .method.character {
-		background-image: url("{% static 'img/character.png' %}");
-	}
-
-	.radioMethod .method.character-white {
-		background-image: url("{% static 'img/character-white.png' %}");
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 9;
+		background-color: rgba(0, 0, 0, 0.3); /*dim the background*/
 	}
 	</style>
 </head>
 
 <body>
 	<main role="main" class="container">
+		你是{{ me.get_color_display }}色玩家！ <br /> 房间号：{{ room_id }} <br /> 玩家ID：{{ me.player_code }}
 		<form>
 			{% for zodiac in game.zodiacs.all %}
 			{% if forloop.counter0|divisibleby:4 %}
 			<div class="form-group row">
 				<div class="btn-group btn-group-toggle" data-toggle="buttons">
 					<ul>
-						{% endif %}
+			{% endif %}
 						<li class="btn btn-light">
 							<input type="radio" name="options" id="option{{ forloop.counter }}" autocomplete="off">
 							<img src="{{ zodiac.zodiac_image.image.url }}" alt="{{ zodiac.genuine }}" class="-avatar js-avatar-me">
 						</li>
-							{% if forloop.counter|divisibleby:4 %}
+			{% if forloop.counter|divisibleby:4 %}
 					</ul>
 				</div>
 			</div>
@@ -104,19 +78,19 @@
 				</div>
 				{% endfor %}
 			</div>
-			<div id="player_sequence" class="form-group row">
+			<div id="player_sequence" class="form-group row" style="display: none;">
 				<div class="radioWrap">
 					<div class="btn-group radioBtnGroup btn-group-justified" data-toggle="buttons">
 						{% for player in game.players.all %}
-						<label class="btn radioMethod" data-color="{{ player.color }}">
-							<div class="method {% if player.color == 'Black' %} character-white {% else %} character {% endif %}" style="background-color: {{ player.color }}" {% if player.pk == me.pk %}disabled{% endif %}></div>
-							<input type="radio" name="players_sequence">
+						<label class="btn radioMethod sequence {% if player.pk == me.pk %}dim{% endif %}" data-color="{{ player.color }}">
+							<div class="method {% if player.color == 'Black' %} character-white {% else %} character {% endif %}" style="background-color: {{ player.color }}"></div>
+							<input type="radio" name="players_sequence" {% if player.pk == me.pk %}disabled{% endif %}>
 						</label>
-						{% if forloop.counter == 4 %}
-						</div>
-						<div class="btn-group radioBtnGroup btn-group-justified" data-toggle="buttons">
-						{% endif %}
-						{% endfor %}
+					{% if forloop.counter == 4 %}
+					</div>
+					<div class="btn-group radioBtnGroup btn-group-justified" data-toggle="buttons">
+					{% endif %}
+					{% endfor %}
 					</div>
 				</div>
 			</div>
@@ -140,6 +114,10 @@
 	<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
 	<script src="{% static 'js/cookie.js' %}"></script>
 	<script type="text/javascript">
+	String.prototype.format = function () {
+		var args = arguments;
+		return this.replace(/\{(\d+)\}/g, function (m, n) { return args[n]; });
+	};
 	$(function() {
 		$("img").click(function() {
 			console.log($(this).attr("alt"));
@@ -148,6 +126,78 @@
 			if ($(this).attr("alt") === "False")
 				$("#genuine").val("伪");
 		})
+		setInterval(function() {
+			$.ajaxSetup({
+				beforeSend: function(xhr, settings) {
+					if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					}
+				}
+			});
+			$.ajax({
+				url: "{% url 'MoA:GetNextPlay' %}",
+				type: "POST",
+				data: {
+					"player_code": "{{ me.player_code }}",
+					"room_id": "{{ room_id }}",
+				},
+				statusCode: {
+					201: function(response) {
+						// To-Do: dynamic generation
+						// console.log(response);
+						var start_speech = true;
+						response.forEach(function(player) {
+							if (player.fields.sequence < {{ me.sequence }}) {
+								var label = $("label[data-color={0}]".format(player.fields.color))
+								label.addClass("dim");
+								label.children("input").prop('disabled', true);
+							}
+							else {
+								if (player.fields.sequence > {{ me.sequence }})
+									start_speech = false;
+							}
+						});
+						$("#player_sequence").css("display", "");
+						if (start_speech) {
+							setTimeout(function() {
+								$.ajax({
+									url: "{% url 'MoA:StartBB' %}",
+									type: "POST",
+									data: {
+										"room_id": "{{ room_id }}",
+									},
+									success: function(result) {
+										// alert(result);
+										$("#player_sequence").css("display", "none");
+									}
+								});
+							}, 5000);
+						}
+					}
+				}, success: function(result) {
+					
+				},
+			});
+		}, 3000);
+		$("label.sequence").click(function() {
+			// console.log($(this).data("color"));
+			if (!$(this).prop('disabled')) {
+				$.ajax({
+					url: "{% url 'MoA:SetNextPlayer' %}",
+					type: "POST",
+					data: {
+						"player_code": "{{ me.player_code }}",
+						"color": $(this).data("color"),
+					},
+					success: function(result) {
+						// alert(result);
+						setTimeout(function() {
+							$("#player_sequence").css("display", "none");
+						}, 500);
+					}
+				});
+			}
+		});
 	});
 	</script>
 </body>

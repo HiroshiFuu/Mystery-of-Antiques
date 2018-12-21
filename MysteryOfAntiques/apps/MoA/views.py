@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils import timezone
+from django.core import serializers
 
 from .models import Game, ZodiacImage, Zodiac, Character, Player
 from .base_model import CHARACTOR_CHOICES, COLOR_CHOICES, ZODIAC_CHOICES
@@ -64,20 +65,29 @@ def RecoverPlayer(request):
 	player = Player.objects.filter(player_code=player_code).first()
 	if player is None:
 		return redirect('MoA:Home')
+		
 	request.session['player_code'] = player_code
 	room_id = player.game.room_id
-	return render(request, 'to_setup.html', {'room_id': room_id})
+	game = Game.objects.filter(room_id=room_id).first()
+	if game is None:
+		return redirect('MoA:Home')
+	if game.stage == -1:
+		return render(request, 'to_setup.html', {'room_id': room_id})
+	else:
+		return render(request, 'to_game.html', {'room_id': room_id})
 
 
 def SetupGame(request):
 	room_id = request.POST.get('room_id', None)
 	if room_id is None or len(room_id) != 5:
 		return redirect('MoA:Home')
-	player_code = request.session.get('player_code', None)
-	print(player_code)
 	game = Game.objects.filter(room_id=room_id).first()
 	if game is None:
 		return redirect('MoA:Home')
+
+	player_code = request.session.get('player_code', None)
+	print(player_code)
+
 	all_colors = get_all_colors()
 	if player_code is None:
 		player_code = random.randint(100, 999)
@@ -112,7 +122,7 @@ def GetConnectedPlayerColors(request):
 	game = Game.objects.get(room_id=room_id)
 	players = game.players.all()
 	player_colors = [player.color for player in players]
-	return HttpResponse(json.dumps(player_colors), content_type="application/json", status=200)
+	return HttpResponse(json.dumps(player_colors), content_type='application/json', status=200)
 
 
 def IamAlive(request):
@@ -130,7 +140,7 @@ def GetAlivePlayerColors(request):
 	elif game.stage == 0:
 		players = game.players.all()
 	player_colors = [player.color for player in players]
-	return HttpResponse(json.dumps(player_colors), content_type="application/json", status=200)
+	return HttpResponse(json.dumps(player_colors), content_type='application/json', status=200)
 
 
 def ImAliveGetAlive(request):
@@ -144,13 +154,14 @@ def ImAliveGetAlive(request):
 	elif game.stage == 0:
 		players = game.players.all()
 	player_colors = [player.color for player in players]
-	return HttpResponse(json.dumps(player_colors), content_type="application/json", status=200)
+	return HttpResponse(json.dumps(player_colors), content_type='application/json', status=200)
 
 
 def GameMoA(request):
 	room_id = request.POST.get('room_id', None)
 	if room_id is None:
 		return redirect('MoA:SetupGame')
+
 	game = Game.objects.get(room_id=room_id)
 	if game.stage == -1:
 		# game.stage = 0
@@ -177,7 +188,7 @@ def GameMoA(request):
 	# 		player.save()
 	player_code = request.session.get('player_code', None)
 	me = Player.objects.get(player_code=player_code)
-	return render(request, 'game.html', {'game': game, 'me': me})
+	return render(request, 'game.html', {'game': game, 'me': me, 'room_id': room_id})
 
 
 def GetNextPlay(request):
@@ -185,11 +196,44 @@ def GetNextPlay(request):
 	room_id = request.POST.get('room_id', None)
 	if player_code is None or room_id is None:
 		return redirect('MoA:SetupGame')
+
 	player = Player.objects.get(player_code=player_code)
 	game = Game.objects.get(room_id=room_id)
 	if player.sequence == game.stage:
-		return HttpResponse('play', status=201)
-	return HttpResponse('wait', status=200)
+		return HttpResponse(serializers.serialize('json', game.players.all()), content_type='application/json', status=201)
+	elif game.stage % 10 == 0:
+		return HttpResponse('BB', status=202)
+	else:
+		return HttpResponse('wait', status=200)
+
+
+def SetNextPlayer(request):
+	player_code = request.POST.get('player_code', None)
+	color = request.POST.get('color', None)
+	if player_code is None or color is None:
+		return redirect('MoA:SetupGame')
+
+	cur_player = Player.objects.get(player_code=player_code)
+	game = cur_player.game
+	if cur_player.sequence == game.stage:
+		next_player = game.players.get(color=color)
+		# print(next_player)
+		next_player.sequence = cur_player.sequence + 1
+		next_player.save()
+		game.stage = cur_player.sequence + 1
+		game.save()
+	return HttpResponse()
+
+
+def StartBB(request):
+	room_id = request.POST.get('room_id', None)
+	if room_id is None:
+		return redirect('MoA:SetupGame')
+
+	game = Game.objects.get(room_id=room_id)
+	game.stage = 10
+	game.save()
+	return HttpResponse('Start BB', status=200)
 
 
 def EndGame(request):

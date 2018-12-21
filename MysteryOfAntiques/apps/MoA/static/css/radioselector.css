@@ -2,29 +2,29 @@
 	padding: 50px;
 }
 
-.radioWrap .radioBtnGroup {
-	max-width: 800px;
+.radioBtnGroup {
+	max-width: 900px;
 	margin: auto;
 }
 
-.radioWrap .radioBtnGroup .radioMethod {
+.radioMethod {
 	padding: 50px;
 	box-shadow: none;
 	position: relative;
 	margin: 10px;
 }
 
-.radioWrap .radioBtnGroup .radioMethod.active {
+.radioMethod.active {
 	outline: none !important;
 }
 
-.radioWrap .radioBtnGroup .radioMethod.active .method {
+.radioMethod.active .method {
 	border-color: #4cd264;
 	outline: none !important;
 	box-shadow: 0px 5px 24px 0px #7b7b7b;
 }
 
-.radioWrap .radioBtnGroup .radioMethod .method {
+.radioMethod .method {
 	position: absolute;
 	right: 3px;
 	top: 3px;
@@ -37,10 +37,10 @@
 	transition: all 0.5s;
 }
 
-.radioWrap .radioBtnGroup .radioMethod .method.character {
+.radioMethod .method.character {
 	background-image: url("../img/character.png");
 }
 
-.radioWrap .radioBtnGroup .radioMethod .method.character-white {
+.radioMethod .method.character-white {
 	background-image: url("../img/character-white.png");
 }

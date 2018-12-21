@@ -158,6 +158,13 @@
 		console.log("wizard_completed");
 		$("h1[class='wizard__congrats-message']").css("display", "");
 		setInterval(function() {
+			$.ajaxSetup({
+				beforeSend: function(xhr, settings) {
+					if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					}
+				}
+			});
 			$(".radioMethod").removeClass("active");
 			$(".radioMethod").removeClass("checked");
 			$.ajax({
@@ -174,7 +181,7 @@
 						$("[data-color='" + color + "']").addClass("checked");
 						ready_player_cout++;
 					});
-					if (ready_player_cout == 3) {
+					if (ready_player_cout >= 3) {
 						$("#fm").submit();
 					}
 				}
@@ -243,7 +250,7 @@
 					$("#name").val(result);
 				}
 			});
-		}); 
+		});
 		{% if player.name %}
 			$("#btnNext").removeClass("disabled");
 			$("#btnName").text("修改");

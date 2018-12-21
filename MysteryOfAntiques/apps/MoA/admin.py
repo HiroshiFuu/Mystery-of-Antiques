@@ -8,6 +8,7 @@ class GameAdmin(admin.ModelAdmin):
 	list_display = [
 		'room_id',
 		'stage',
+		'created_at',
 	]
 	filter_horizontal = ('characters',)
 
