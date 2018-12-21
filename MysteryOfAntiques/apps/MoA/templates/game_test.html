@@ -60,16 +60,24 @@
 					<input type="text" class="form-control" id="genuine">
 				</div>
 			</div>
-			<!-- <div id="zodiac_investigate" class="form-group row">
-				<div class="btn-group btn-group-toggle" data-toggle="buttons">
-					<ul>
-						<li class="btn btn-light">
-							<input type="radio" name="option{{ forloop.counter }}" id="option{{ forloop.counter }}" autocomplete="off">
-							<img src="{{ zodiac.zodiac_image.image.url }}" alt="{{ zodiac.genuine }}" class="-avatar js-avatar-me">
-						</li>
-					</ul>
+			<div class="form-group row">
+				{% for player in game.players.all %}
+				<div class="card" style="width: 150px; margin: 0px 10px;">
+					<div class="card-body">
+						<label class="radioMethod">
+							<div class="method {% if player.color == 'Black' %} character-white {% else %} character {% endif %}" style="background-color: {{ player.color }}"></div>
+						</label>
+						<h5 class="card-title" style="color: {{ player.color }};">{{ player.name }}</h5>
+						{% if forloop.first and player.color == me.color %}
+						<h6 class="card-subtitle mb-2 text-muted">请行动</h6>
+						<!-- <p class="card-text">请选择下一位行动的玩家</p> -->
+						{% else %}
+						<h6 class="card-subtitle mb-2 text-muted">请等待</h6>
+						{% endif %}
+					</div>
 				</div>
-			</div> -->
+				{% endfor %}
+			</div>
 			<div id="player_sequence" class="form-group row" style="display: none;">
 				<div class="radioWrap">
 					<div class="btn-group radioBtnGroup btn-group-justified" data-toggle="buttons">
@@ -86,6 +94,16 @@
 					</div>
 				</div>
 			</div>
+			<!-- <div id="zodiac_investigate" class="form-group row">
+				<div class="btn-group btn-group-toggle" data-toggle="buttons">
+					<ul>
+						<li class="btn btn-light">
+							<input type="radio" name="option{{ forloop.counter }}" id="option{{ forloop.counter }}" autocomplete="off">
+							<img src="{{ zodiac.zodiac_image.image.url }}" alt="{{ zodiac.genuine }}" class="-avatar js-avatar-me">
+						</li>
+					</ul>
+				</div>
+			</div> -->
 		</form>
 	</main>
 	<form id="fm" method="POST" action="">

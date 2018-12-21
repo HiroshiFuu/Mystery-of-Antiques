@@ -65,7 +65,7 @@ def RecoverPlayer(request):
 	player = Player.objects.filter(player_code=player_code).first()
 	if player is None:
 		return redirect('MoA:Home')
-		
+
 	request.session['player_code'] = player_code
 	room_id = player.game.room_id
 	game = Game.objects.filter(room_id=room_id).first()
@@ -173,19 +173,6 @@ def GameMoA(request):
 		player = game.players.filter(color=color).first()
 		player.sequence = 1
 		player.save()
-	# color_sequence = []
-	# for i in range(0, 8):
-	# 	color_sequence.append((game.start_color_index + i) % 8)
-	# # print(color_sequence)
-	# all_colors = get_all_colors()
-	# for i in range(0, 8):
-	# 	color = all_colors[color_sequence[i]]
-	# 	# print(color)
-	# 	player = game.players.filter(color=color).first()
-	# 	# print(player)
-	# 	if player:
-	# 		player.sequence = i + 1
-	# 		player.save()
 	player_code = request.session.get('player_code', None)
 	me = Player.objects.get(player_code=player_code)
 	return render(request, 'game.html', {'game': game, 'me': me, 'room_id': room_id})
@@ -241,3 +228,24 @@ def EndGame(request):
 	# del request.session['join_at']
 	# del request.session['create_at']
 	return HttpResponse()
+
+
+def TestGameMoA(request):
+	room_id = request.POST.get('room_id', None)
+	if room_id is None:
+		return redirect('MoA:SetupGame')
+
+	game = Game.objects.get(room_id=room_id)
+	if game.stage == -1:
+		# game.stage = 0
+		# To-Do: another ready check to set to 1
+		game.stage = 1
+		game.save()
+		all_colors = get_all_colors()
+		start_color = all_colors[game.start_color_index]
+		player = game.players.filter(color=color).first()
+		player.sequence = 1
+		player.save()
+	player_code = request.session.get('player_code', None)
+	me = Player.objects.get(player_code=player_code)
+	return render(request, 'game.html', {'game': game, 'me': me, 'room_id': room_id})
