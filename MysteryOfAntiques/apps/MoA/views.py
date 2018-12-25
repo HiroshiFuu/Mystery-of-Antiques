@@ -137,7 +137,7 @@ def GetAlivePlayerColors(request):
 	game = Game.objects.get(room_id=room_id)
 	if game.stage == -1:
 		players = [player for player in game.players.all() if player.is_alive()]
-	elif game.stage == 0:
+	elif game.stage >= 0:
 		players = game.players.all()
 	player_colors = [player.color for player in players]
 	return HttpResponse(json.dumps(player_colors), content_type='application/json', status=200)
@@ -151,7 +151,7 @@ def ImAliveGetAlive(request):
 	game = Game.objects.get(room_id=room_id)
 	if game.stage == -1:
 		players = [player for player in game.players.all() if player.is_alive()]
-	elif game.stage == 0:
+	elif game.stage >= 0:
 		players = game.players.all()
 	player_colors = [player.color for player in players]
 	return HttpResponse(json.dumps(player_colors), content_type='application/json', status=200)
@@ -168,9 +168,10 @@ def GameMoA(request):
 		# To-Do: another ready check to set to 1
 		game.stage = 1
 		game.save()
-		all_colors = get_all_colors()
-		start_color = all_colors[game.start_color_index]
-		player = game.players.filter(color=color).first()
+		# all_colors = get_all_colors()
+		# start_color = all_colors[game.start_color_index]
+		# player = game.players.filter(color=color).first()
+		player = game.players.all().first()
 		player.sequence = 1
 		player.save()
 	player_code = request.session.get('player_code', None)

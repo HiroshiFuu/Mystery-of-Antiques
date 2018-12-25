@@ -2,7 +2,7 @@
 django
 
 # Configuration
-#django-environ
+django-environ
 
 # Forms
 django-crispy-forms
@@ -25,6 +25,7 @@ django-suit
 django-suit-redactor
 django-admin-view-permission
 django-cors-headers
+django-debug-toolbar
 
 # Image Thumbnail
 #django-imagekit

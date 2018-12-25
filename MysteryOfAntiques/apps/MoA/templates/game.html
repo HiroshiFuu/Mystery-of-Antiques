@@ -38,6 +38,7 @@
 	<main role="main" class="container">
 		你是{{ me.get_color_display }}色玩家！ <br /> 房间号：{{ room_id }} <br /> 玩家ID：{{ me.player_code }}
 		<form>
+			{% csrf_token %}
 			{% for zodiac in game.zodiacs.all %}
 			{% if forloop.counter0|divisibleby:4 %}
 			<div class="form-group row">
@@ -112,7 +113,7 @@
 			$.ajaxSetup({
 				beforeSend: function(xhr, settings) {
 					if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+						xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
 					}
 				}
 			});
