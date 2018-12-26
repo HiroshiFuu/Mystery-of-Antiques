@@ -15,14 +15,14 @@ import json
 def get_a_character(game):
 	characters = game.characters.all()
 	# character = random.choice(characters)
-	character = characters.first()
+	character = characters.first()	# for testing
 	game.characters.remove(character)
 	return character
 
 
 def get_all_colors():
 	all_colors = sorted([color[0] for color in COLOR_CHOICES])
-	print(all_colors)
+	# print(all_colors)
 	return all_colors
 
 
@@ -99,7 +99,8 @@ def SetupGame(request):
 		players = game.players.all()
 		player_colors = [player.color for player in players]
 		available_colors = [c for c in player_colors + all_colors if c not in player_colors or c not in all_colors]
-		color = random.choice(available_colors)
+		# color = random.choice(available_colors)
+		color = available_colors[0]	# for testing
 		new_player = Player(player_code=player_code, color=color, game=game, character=character)
 		name = new_player.get_color_display()
 		new_player.name = name
