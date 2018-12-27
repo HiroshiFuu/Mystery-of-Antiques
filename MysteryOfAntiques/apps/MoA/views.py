@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
 from django.utils import timezone
 from django.core import serializers
@@ -167,17 +167,18 @@ def GameMoA(request):
 	if game.stage == -1:
 		# game.stage = 0
 		# To-Do: another ready check to set to 1
-		game.stage = 1
+		game.stage = 101
 		game.save()
 		# all_colors = get_all_colors()
 		# start_color = all_colors[game.start_color_index]
 		# player = game.players.filter(color=color).first()
-		player = game.players.all().first()
+		player = game.players.all().first() # for testing
 		player.sequence = 1
 		player.save()
 	player_code = request.session.get('player_code', None)
 	me = Player.objects.get(player_code=player_code)
-	return render(request, 'game.html', {'game': game, 'me': me, 'room_id': room_id})
+	players = game.players.all()
+	return render(request, 'game.html', {'game': game, 'me': me, 'room_id': room_id, 'players': players})
 
 
 def GetNextPlay(request):
@@ -188,12 +189,23 @@ def GetNextPlay(request):
 
 	player = Player.objects.get(player_code=player_code)
 	game = Game.objects.get(room_id=room_id)
-	if player.sequence == game.stage:
-		return HttpResponse(serializers.serialize('json', game.players.all()), content_type='application/json', status=201)
-	elif game.stage % 10 == 0:
-		return HttpResponse('BB', status=202)
+	stage_round = int(game.stage / 100)
+	if stage_round > 0 and player.sequence == game.stage % 10:
+		start = stage_round - 1
+		end = stage_round * 4
+		# print(start, end)
+		zodiacs = game.zodiacs.all()[start:end]
+		ZODIACS = []
+		for zodiac in zodiacs:
+			ZODIACS.append({'pk': zodiac.pk, 'zodiac_image_url': zodiac.zodiac_image.image.url})
+		# print(ZODIACS)
+		return JsonResponse(ZODIACS, safe=False, status=201)
+	elif player.sequence == game.stage % 100 / 10.0:
+		return HttpResponse(serializers.serialize('json', game.players.all()), content_type='application/json', status=202)
+	elif game.stage == 100:
+		return HttpResponse('BB', status=203)
 	else:
-		return HttpResponse('wait', status=200)
+		return HttpResponse('wait', status=209)
 
 
 def SetNextPlayer(request):
@@ -204,14 +216,38 @@ def SetNextPlayer(request):
 
 	cur_player = Player.objects.get(player_code=player_code)
 	game = cur_player.game
-	if cur_player.sequence == game.stage:
+	if cur_player.sequence == game.stage % 100 / 10.0:
 		next_player = game.players.get(color=color)
 		# print(next_player)
 		next_player.sequence = cur_player.sequence + 1
 		next_player.save()
-		game.stage = cur_player.sequence + 1
+		game.stage = game.stage - game.stage % 10 + next_player.sequence
 		game.save()
 	return HttpResponse()
+
+
+def CheckGenuine(request):
+	player_code = request.POST.get('player_code', None)
+	room_id = request.POST.get('room_id', None)
+	if player_code is None or room_id is None:
+		return redirect('MoA:SetupGame')
+
+	zodiac_pk = request.POST.get('zodiac_pk', None)
+	if zodiac_pk is None:
+		return redirect('MoA:GameMoA')
+
+	player = Player.objects.get(player_code=player_code)
+	game = Game.objects.get(room_id=room_id)
+	zodiac = Zodiac.objects.get(pk=zodiac_pk)
+	if player is None or game is None or zodiac is None:
+		return redirect('MoA:GameMoA')
+
+	if player.sequence != game.stage % 10:
+		return redirect('MoA:GameMoA')
+
+	game.stage = game.stage - game.stage % 100 + game.stage % 10 * 10
+	game.save()
+	return HttpResponse(zodiac.genuine, status=200)
 
 
 def StartBB(request):
@@ -220,7 +256,10 @@ def StartBB(request):
 		return redirect('MoA:SetupGame')
 
 	game = Game.objects.get(room_id=room_id)
-	game.stage = 10
+	for player in game.players.all():
+		if player.sequence > game.stage % 100 - game.stage % 10:
+			return HttpResponse('not yet BB', status=209)
+	game.stage = game.stage - game.stage % 100 + 99
 	game.save()
 	return HttpResponse('Start BB', status=200)
 

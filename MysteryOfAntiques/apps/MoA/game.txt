@@ -1,0 +1,10 @@
+-1: init
+0: all ready
+
+100: 1st round
+101: 1st player investigate
+110: 1st player done investigation, select next player
+112: 2nd player investigate
+120: 2nd player done investigation, select next player
+132: 3rd player investigate
+130: 3rd player done investigation, select next player

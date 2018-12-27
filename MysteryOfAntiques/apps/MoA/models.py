@@ -85,7 +85,7 @@ class Player(SlugMixin, AuditMixin, models.Model):
 	name = models.CharField(max_length=255)
 	player_code = models.PositiveSmallIntegerField(unique=True, help_text="Player Code", verbose_name='Player Code')
 	color = models.CharField(max_length=7, choices=COLOR_CHOICES, null=True)
-	sequence = models.PositiveSmallIntegerField(default=100)
+	sequence = models.PositiveSmallIntegerField(default=999)
 	step = models.PositiveSmallIntegerField(default=0)
 	game = models.ForeignKey(Game, models.CASCADE, related_name='players')
 	character = models.ForeignKey(Character, models.PROTECT, verbose_name='Character')
