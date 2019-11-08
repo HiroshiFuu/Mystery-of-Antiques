@@ -13,6 +13,6 @@ router.register(r'Game', GameViewSet)
 
 urlpatterns = [
     url(r'^$', schema_view),
-    url(r'^CreateGame', CreateGame.as_view()),
+    url(r'^CreateGame/', CreateGame.as_view()),
 ]
 urlpatterns += router.urls

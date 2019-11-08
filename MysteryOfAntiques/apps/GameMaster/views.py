@@ -16,6 +16,7 @@ from datetime import timedelta
 import random
 import json
 
+
 # Create your views here.
 class GameViewSet(viewsets.ModelViewSet):
     queryset = Game.objects.all()
