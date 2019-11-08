@@ -92,6 +92,7 @@ class Player(SlugMixin, AuditMixin, models.Model):
 
 	def is_alive(self):
 		return self.modified_at >= timezone.now() - timedelta(seconds=8)
+		
 	is_alive.boolean = True
 	is_alive.short_description = 'Is Alive?'
 

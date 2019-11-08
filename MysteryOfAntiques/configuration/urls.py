@@ -18,7 +18,7 @@ urlpatterns = [
 
     # Your stuff: custom urls includes go here
     url(r'^MoA/', include('apps.MoA.urls', namespace='MoA')),
-    # url(r'^GameMaster/', include('apps.GameMaster.urls', namespace='GameMaster')),
+    url(r'^GameMaster/', include('apps.GameMaster.urls', namespace='GameMaster')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

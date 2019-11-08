@@ -165,8 +165,6 @@
 					}
 				}
 			});
-			$(".radioMethod").removeClass("active");
-			$(".radioMethod").removeClass("checked");
 			$.ajax({
 				url: "{% url 'MoA:ImAliveGetAlive' %}",
 				type: "POST",
@@ -184,6 +182,9 @@
 					if (ready_player_cout >= 3) {
 						$("#fm").submit();
 					}
+				},
+				fail: function(result) {
+					$(".radioMethod").removeClass("checked");
 				}
 			});
 			// $.ajax({
@@ -225,6 +226,9 @@
 					result.forEach(function(color) {
 						$("[data-color='" + color + "']").addClass("active");
 					});
+				},
+				fail: function(result) {
+					$(".radioMethod").removeClass("active");
 				}
 			});
 		}, 5000);

@@ -43,17 +43,29 @@ THIRD_PARTY_APPS = [
     'allauth',  # registration
     'allauth.account',  # registration
     # 'imagekit', # Photo thumbnail
+    'rest_framework',
+    'rest_framework_swagger',
 ]
 
 # Apps specific for this project go here.
 LOCAL_APPS = [
     # Your stuff: custom apps go here
     'apps.MoA',
-    # 'apps.GameMaster',
+    'apps.GameMaster',
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS  # to solve dependency issue
+
+
+## REST FRAMEWORK
+# ------------------------------------------------------------------------------
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 
 
 # MIDDLEWARE CONFIGURATION
