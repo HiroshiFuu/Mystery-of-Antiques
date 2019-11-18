@@ -9,7 +9,7 @@ import itertools
 
 CHARACTOR_CHOICES = {
 	('XuYuan', _("许愿")),
-	('FanZhen', _("方震")),
+	('FangZhen', _("方震")),
 	('JiYunFu', _("姬云浮")),
 	('Kana Kinoshi', _("木户加奈")),
 	('HuangYanYan', _("黄烟烟")),

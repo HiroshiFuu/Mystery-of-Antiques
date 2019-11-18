@@ -73,8 +73,9 @@ class CreateGame(APIView):
 class SetupGame(APIView):
     lookup_field = 'room_id'
 
-    def get(self, request, pk=None, room_id=None):
+    def get(self, request, pk=None, room_id=None, player_code=None):
         print('SetupGame', self.kwargs, self.lookup_field)
+        print('player_code', player_code)
         room_id = self.kwargs.get(self.lookup_field, None)
         if room_id is None or len(room_id) != 5:
             return Response(data={'error': 'Room ID invalid'}, status=status.HTTP_200_OK, content_type='application/json')
@@ -82,12 +83,9 @@ class SetupGame(APIView):
         if game is None:
             return Response(data={'error': 'No room found'}, status=status.HTTP_200_OK, content_type='application/json')
 
-        player_code = request.session.get('player_code', None)
         sesson_room_id = request.session.get('room_id', None)
         if sesson_room_id != room_id:
             request.session['room_id'] = room_id
-        player_code = None
-        print('player_code', player_code)
 
         all_colors = get_all_colors()
         if player_code is None:
@@ -100,8 +98,8 @@ class SetupGame(APIView):
             players = game.players.all()
             player_colors = [player.color for player in players]
             available_colors = [c for c in player_colors + all_colors if c not in player_colors or c not in all_colors]
-            # color = random.choice(available_colors)
-            color = available_colors[0] # for testing
+            color = random.choice(available_colors)
+            # color = available_colors[0] # for testing
             new_player = Player(player_code=player_code, color=color, game=game, character=character)
             name = new_player.get_color_display()
             new_player.name = name

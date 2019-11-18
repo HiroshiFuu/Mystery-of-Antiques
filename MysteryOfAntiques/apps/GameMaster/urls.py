@@ -15,5 +15,6 @@ urlpatterns = [
     url(r'^$', schema_view),
     url(r'^CreateGame', CreateGame.as_view()),
     url(r'^SetupGame/(?P<room_id>\d+)/$', SetupGame.as_view()),
+    url(r'^SetupGame/(?P<room_id>\d+)/(?P<player_code>\d+)/$', SetupGame.as_view()),
 ]
 urlpatterns += router.urls
