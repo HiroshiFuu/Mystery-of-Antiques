@@ -58,6 +58,7 @@ class ZodiacImageAdmin(admin.ModelAdmin):
 @admin.register(Zodiac)
 class ZodiacAdmin(admin.ModelAdmin):
 	list_display = [
+		'pk',
 		'game',
 		'name',
 		'genuine',

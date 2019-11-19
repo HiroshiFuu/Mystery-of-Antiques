@@ -46,8 +46,8 @@ ZODIAC_CHOICES = {
 
 ZODIAC_STATUS_CHOICES = {
 	(0, _("Normal")),
-	(0, _("Inverted")),
-	(0, _("Blocked")),
+	(1, _("Inverted")),
+	(2, _("Blocked")),
 }
 
 

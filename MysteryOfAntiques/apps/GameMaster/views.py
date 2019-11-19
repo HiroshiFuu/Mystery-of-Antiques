@@ -89,9 +89,9 @@ class SetupGame(APIView):
 
         all_colors = get_all_colors()
         if player_code is None:
-            player_code = random.randint(100, 999)
+            player_code = random.randint(100, 99999)
             while Player.objects.filter(player_code=player_code).count() > 0:
-                player_code = random.randint(100, 999)
+                player_code = random.randint(100, 99999)
             request.session['player_code'] = player_code
             request.session['join_at'] = str(timezone.now())
             character = get_a_character(game)
@@ -112,7 +112,7 @@ class SetupGame(APIView):
 
 
 @permission_classes((permissions.AllowAny,))
-class TestLoadZodics(APIView):
+class TestLoadZodiacs(APIView):
     def get(self, request, pk=None, room_id=None, player_code=None):
         print('TestLoadZodics', room_id, player_code)
         if room_id is None or player_code is None:
@@ -132,6 +132,20 @@ class TestLoadZodics(APIView):
         zodiacs = game.zodiacs.all()[start:end]
         ZODIACS = []
         for zodiac in zodiacs:
-            ZODIACS.append({'name': zodiac.name, 'zodiac_image_url': zodiac.zodiac_image.image.url})
+            ZODIACS.append({'pk': zodiac.pk, 'name': zodiac.name, 'zodiac_image_url': zodiac.zodiac_image.image.url})
         print(ZODIACS)
         return Response(data={'zodiacs': ZODIACS}, status=status.HTTP_201_CREATED, content_type='application/json')
+
+
+@permission_classes((permissions.AllowAny,))
+class InspectZodiac(APIView):
+    def get(self, request, pk=None):
+        print('InspectZodiac', pk)
+        if pk is None:
+            return Response(data={'error': 'pk is None'}, status=status.HTTP_400_BAD_REQUEST, content_type='application/json')
+
+        zodiac = Zodiac.objects.get(pk=pk)
+        if zodiac is None:
+            return Response(data={'error': 'no such Zodiac'}, status=status.HTTP_400_BAD_REQUEST, content_type='application/json')
+        print(zodiac)
+        return Response(data={'genuine': zodiac.genuine}, status=status.HTTP_200_OK, content_type='application/json')
