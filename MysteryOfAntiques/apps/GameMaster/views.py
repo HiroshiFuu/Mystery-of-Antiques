@@ -109,3 +109,29 @@ class SetupGame(APIView):
         serializer_player = PlayerSerializer(player)
         serializer_character = CharacterSerializer(player.character)
         return Response(data={'room_id': room_id, 'player': serializer_player.data, 'character': serializer_character.data, 'colors': all_colors}, status=status.HTTP_200_OK, content_type='application/json')
+
+
+@permission_classes((permissions.AllowAny,))
+class TestLoadZodics(APIView):
+    def get(self, request, pk=None, room_id=None, player_code=None):
+        print('TestLoadZodics', room_id, player_code)
+        if room_id is None or player_code is None:
+            return Response(data={'error': 'room_id is None or player_code is None'}, status=status.HTTP_400_BAD_REQUEST, content_type='application/json')
+
+        game = Game.objects.get(room_id=room_id)
+        if game is None:
+            return Response(data={'error': 'no such Game'}, status=status.HTTP_400_BAD_REQUEST, content_type='application/json')
+        player = Player.objects.get(player_code=player_code)
+        if player is None:
+            return Response(data={'error': 'Player does not exist'}, status=status.HTTP_400_BAD_REQUEST, content_type='application/json')
+        stage_round = int(game.stage / 100)
+        stage_round = 1
+        start = stage_round - 1
+        end = stage_round * 4
+        # print(start, end)
+        zodiacs = game.zodiacs.all()[start:end]
+        ZODIACS = []
+        for zodiac in zodiacs:
+            ZODIACS.append({'name': zodiac.name, 'zodiac_image_url': zodiac.zodiac_image.image.url})
+        print(ZODIACS)
+        return Response(data={'zodiacs': ZODIACS}, status=status.HTTP_201_CREATED, content_type='application/json')
