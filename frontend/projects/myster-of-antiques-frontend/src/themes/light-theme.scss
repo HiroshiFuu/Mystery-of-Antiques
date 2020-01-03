@@ -1,0 +1,9 @@
+$frontend-light-primary: mat-palette($mat-grey, 200, 500, 300);
+$frontend-light-accent: mat-palette($mat-brown, 200);
+$frontend-light-warn: mat-palette($mat-deep-orange, 200);
+
+$frontend-light-theme: mat-light-theme(
+  $frontend-light-primary,
+  $frontend-light-accent,
+  $frontend-light-warn
+);
