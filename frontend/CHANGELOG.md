@@ -8,4 +8,4 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-- add Angular ngRX Material Starter to project ([]())
+- add Angular ngRX Material Starter to project ([508391b](https://github.com/HiroshiFuu/Mystery-of-Antiques/commit/508391b))
