@@ -1,9 +1,0 @@
-$frontend-nature-primary: mat-palette($mat-brown, 700, 300, 900);
-$frontend-nature-accent: mat-palette($mat-deep-purple, 300);
-$frontend-nature-warn: mat-palette($mat-red, 600);
-
-$frontend-nature-theme: mat-light-theme(
-  $frontend-nature-primary,
-  $frontend-nature-accent,
-  $frontend-nature-warn
-);

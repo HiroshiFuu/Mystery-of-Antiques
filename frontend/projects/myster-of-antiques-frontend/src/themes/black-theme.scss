@@ -1,9 +1,0 @@
-$frontend-black-primary: mat-palette($mat-grey, 700, 300, 900);
-$frontend-black-accent: mat-palette($mat-blue-grey, 400);
-$frontend-black-warn: mat-palette($mat-red, 500);
-
-$frontend-black-theme: mat-dark-theme(
-  $frontend-black-primary,
-  $frontend-black-accent,
-  $frontend-black-warn
-);
