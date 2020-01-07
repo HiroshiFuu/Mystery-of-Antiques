@@ -26,7 +26,8 @@ export class SettingsContainerComponent implements OnInit {
   settings$: Observable<SettingsState>;
 
   themes = [
-    { value: 'DEFAULT-THEME', label: 'blue' },
+    { value: 'DEFAULT-THEME', label: 'nature' },
+    { value: 'BLUE-THEME', label: 'blue' },
     { value: 'LIGHT-THEME', label: 'light' },
     { value: 'NATURE-THEME', label: 'nature' },
     { value: 'BLACK-THEME', label: 'dark' }
