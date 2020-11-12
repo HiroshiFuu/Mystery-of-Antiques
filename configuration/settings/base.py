@@ -11,8 +11,8 @@ import os
 import environ
 
 
-ROOT_DIR = environ.Path(__file__) - 3  # (MysteryOfAntiques/configuration/settings/base.py - 3 = MysteryOfAntiques/)
-APPS_DIR = ROOT_DIR.path('MysteryOfAntiques')
+ROOT_DIR = environ.Path(__file__) - 3  # (Mystery-of-Antiques/configuration/settings/base.py - 3 = Mystery-of-Antiques/)
+CORE_APP_DIR = ROOT_DIR.path('core')
 
 
 # APP CONFIGURATION
@@ -40,11 +40,12 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     'crispy_forms',  # Form layouts
-    'allauth',  # registration
-    'allauth.account',  # registration
+    # 'allauth',  # registration
+    # 'allauth.account',  # registration
     # 'imagekit', # Photo thumbnail
     'rest_framework',
     'rest_framework_swagger',
+    'django_extensions',
 ]
 
 # Apps specific for this project go here.
@@ -52,6 +53,7 @@ LOCAL_APPS = [
     # Your stuff: custom apps go here
     'apps.MoA',
     'apps.GameMaster',
+    'apps.Helper',
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -79,14 +81,14 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'MysteryOfAntiques.middleware.CurrentUserMiddleware',
+    'core.middleware.CurrentUserMiddleware',
 ]
 
 
 # MIGRATIONS CONFIGURATION
 # ------------------------------------------------------------------------------
 MIGRATION_MODULES = {
-    'sites': 'MysteryOfAntiques.contrib.sites.migrations'
+    'sites': 'core.contrib.sites.migrations'
 }
 
 
@@ -105,7 +107,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#admins
 ADMINS = [
-    ("Feng Hao", 'hiroshifuu@gmail.com'),
+    ("FENG Hao", 'hiroshifuu@gmail.com'),
 ]
 
 # Location of root django.contrib.admin URL, use {% url 'admin:index' %}
@@ -161,8 +163,8 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
         'DIRS': [
-            str(APPS_DIR.path('templates')),
-            str(ROOT_DIR.path('apps').path('admin_portal').path('templates')),
+            str(CORE_APP_DIR.path('templates')),
+            # str(ROOT_DIR.path('apps').path('admin_portal').path('templates')),
         ],
         'OPTIONS': {
             # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-debug
@@ -204,7 +206,7 @@ STATIC_URL = '/static/'
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = [
-    str(ROOT_DIR.path('MysteryOfAntiques', 'static')),
+    str(ROOT_DIR.path('core', 'static')),
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
@@ -217,7 +219,7 @@ STATICFILES_FINDERS = [
 # MEDIA CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-root
-MEDIA_ROOT = str(APPS_DIR('media'))
+MEDIA_ROOT = str(CORE_APP_DIR('media'))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = '/media/'
@@ -263,7 +265,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
     {
-        'NAME': 'MysteryOfAntiques.password_validation.UpperLowerNumericPasswordValidator',
+        'NAME': 'core.password_validation.UpperLowerNumericPasswordValidator',
     }
 ]
 
@@ -275,7 +277,7 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-# FOR MysteryOfAntiques SETTING
+# FOR ACCOUNT SETTING
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
 # ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_USERNAME_REQUIRED = True

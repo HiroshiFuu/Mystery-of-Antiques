@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
-from MysteryOfAntiques.views import index
+from core.views import index
 
 urlpatterns = [
     url(r'^$', index, name='home'),
@@ -14,11 +14,12 @@ urlpatterns = [
     url(settings.ADMIN_URL, admin.site.urls),
 
     # User management
-    url(r'^accounts/', include('allauth.urls')),
+    # url(r'^accounts/', include('allauth.urls')),
 
     # Your stuff: custom urls includes go here
     url(r'^MoA/', include('apps.MoA.urls', namespace='MoA')),
     url(r'^GameMaster/', include('apps.GameMaster.urls', namespace='GameMaster')),
+    url(r'^Helper/', include('apps.Helper.urls', namespace='Helper')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
