@@ -1,0 +1,57 @@
+# Bleeding edge Django
+django==2.2.16
+
+# Database connection
+# prerequisite:
+# sudo apt-get install libmariadbclient-dev
+#mysqlclient
+#mysql-connector
+
+# Django-Extensions
+django-extensions
+Werkzeug
+pyOpenSSL
+
+# Configuration
+django-environ
+envparse
+
+# Forms
+django-crispy-forms
+
+# Models
+django-model-utils
+
+# Time zones support
+pytz
+
+# Password storage
+argon2-cffi
+
+# ======== Django Debug ==========
+django-cors-headers
+django-debug-toolbar
+
+# ======== Django Admin ==========
+django-suit
+django-suit-redactor
+django-admin-view-permission
+django-import-export
+django-admin-sortable2
+django-inline-actions
+django-admin-autocomplete-list-filter
+
+# RESTful
+djangorestframework==3.11.2
+django-rest-swagger
+drf_yasg==1.17.1
+
+# Image Processing
+#Pillow
+
+# Image Thumbnail
+#django-imagekit
+
+# For user registration, either via email or social
+# Well-built with regular release cycles!
+#django-allauth

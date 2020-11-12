@@ -3,7 +3,7 @@ from django.conf import settings
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
-from MysteryOfAntiques.middleware import get_current_user
+from core.middleware import get_current_user
 
 import itertools
 
