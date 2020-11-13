@@ -4,8 +4,8 @@ django==2.2.16
 # Database connection
 # prerequisite:
 # sudo apt-get install libmariadbclient-dev
-#mysqlclient
-#mysql-connector
+mysqlclient
+mysql-connector
 
 # Django-Extensions
 django-extensions
