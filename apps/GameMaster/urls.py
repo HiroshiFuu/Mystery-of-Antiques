@@ -5,7 +5,7 @@ from rest_framework import routers
 from .views import GameViewSet, CreateGame, SetupGame
 from .views import TestLoadZodiacs, InspectZodiac
 
-app_name = 'MysterOfAntiques'
+app_name = 'GameMaster'
 
 schema_view = get_swagger_view(title='MofA API')
 
