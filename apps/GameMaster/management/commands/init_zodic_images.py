@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand
 
 from apps.GameMaster.models import ZodiacImage
-
 from apps.GameMaster.constants import ZODIAC_CHOICES
 
 
