@@ -30,21 +30,11 @@ class LogMixin(models.Model):
         return super().save(*args, **kwargs)
 
 
-class Character(LogMixin):
-	name = models.CharField(
-		max_length=31, choices=CHARACTOR_CHOICES, unique=True)
-	skill_description = models.CharField(max_length=1023, null=True)
-
-	def __str__(self):
-		return self.get_name_display()
-
-
 class Game(LogMixin):
 	room_id = models.PositiveSmallIntegerField(
 		unique=True, help_text="Room Number", verbose_name='Room ID')
-	stage = models.PositiveSmallIntegerField(default=0)
+	stage = models.SmallIntegerField(default=-1)
 	start_color_index = models.PositiveSmallIntegerField()
-	characters = models.ManyToManyField(Character, blank=True)
 
 	class Meta:
 		# 	verbose_name = '玩家'
@@ -90,6 +80,15 @@ class Zodiac(LogMixin):
 		ordering = ['game', 'sequence']
 
 
+class Character(LogMixin):
+	name = models.CharField(
+		max_length=31, choices=CHARACTOR_CHOICES, unique=True)
+	skill_description = models.CharField(max_length=1023, null=True)
+
+	def __str__(self):
+		return self.get_name_display()
+
+
 class Player(LogMixin):
 	name = models.CharField(max_length=255)
 	player_code = models.PositiveSmallIntegerField(unique=True, help_text="Player Code", verbose_name='Player Code')
@@ -104,6 +103,9 @@ class Player(LogMixin):
 		# 	verbose_name_plural = '玩家'
 		unique_together = (('game', 'color'), ('game', 'character'))
 		ordering = ['game', 'color']
+
+	def __str__(self):
+		return 'Name: %s  Character: %s' % (self.name, self.character)
 
 	def is_alive(self):
 		return self.modified_at >= timezone.now() - timedelta(seconds=8)
