@@ -10,8 +10,8 @@ from rest_framework import permissions
 
 from .serializers import GameSerializer, PlayerSerializer, CharacterSerializer
 
-from apps.MoA.models import Game, ZodiacImage, Zodiac, Character, Player
-from apps.MoA.base_model import CHARACTOR_CHOICES, COLOR_CHOICES, ZODIAC_CHOICES
+from .models import Game, ZodiacImage, Zodiac, Character, Player
+from .constants import CHARACTOR_CHOICES, COLOR_CHOICES, ZODIAC_CHOICES
 
 from datetime import timedelta
 import random

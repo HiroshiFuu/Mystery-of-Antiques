@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from apps.MoA.models import Game, ZodiacImage, Zodiac, Character, Player
+
+from .models import Game, ZodiacImage, Zodiac, Character, Player
 
 
 class GameSerializer(serializers.ModelSerializer):
