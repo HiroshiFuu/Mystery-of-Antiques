@@ -17,7 +17,7 @@ urlpatterns = [
     # url(r'^accounts/', include('allauth.urls')),
 
     # Your stuff: custom urls includes go here
-    url(r'^MoA/', include('apps.MoA.urls', namespace='MoA')),
+    # url(r'^MoA/', include('apps.MoA.urls', namespace='MoA')),
     url(r'^GameMaster/', include('apps.GameMaster.urls', namespace='GameMaster')),
     url(r'^Helper/', include('apps.Helper.urls', namespace='Helper')),
 ]
