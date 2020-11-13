@@ -1,8 +1,7 @@
 """
-Local settings for Sensor Catalogue project.
+Deployment settings
 
 - Run in Debug mode
-- Use console backend for emails
 - Add Django Debug Toolbar
 - Add django-extensions as app
 """
@@ -14,7 +13,9 @@ from .base import *  # noqa
 DEBUG = True
 TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 
-ALLOWED_HOSTS = ['10.228.242.53', '127.0.0.1', 'iotsite.ngrok.io']
+INTERNAL_IPS = ['127.0.0.1', ]
+
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # SECRET CONFIGURATION
@@ -72,8 +73,6 @@ INSTALLED_APPS += [
     'debug_toolbar',
     'corsheaders',
 ]
-
-INTERNAL_IPS = ['127.0.0.1', ]
 
 
 # DATABASES

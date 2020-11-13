@@ -1,5 +1,5 @@
 """
-Production settings for Sensor Catalogue project.
+Production settings
 
 """
 import logging

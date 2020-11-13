@@ -1,5 +1,5 @@
 """
-Local settings for Sensor Catalogue project.
+Local settings
 
 - Run in Debug mode
 - Add Django Debug Toolbar
@@ -12,6 +12,12 @@ from .base import *  # noqa
 # ------------------------------------------------------------------------------
 DEBUG = True
 TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
+
+INTERNAL_IPS = ['127.0.0.1', ]
+
+ALLOWED_HOSTS = ['*']
+
+RUNSERVERPLUS_SERVER_ADDRESS_PORT = '0.0.0.0:8080'
 
 
 # SECRET CONFIGURATION
@@ -69,8 +75,6 @@ INSTALLED_APPS += [
     'debug_toolbar',
     'corsheaders',
 ]
-
-INTERNAL_IPS = ['127.0.0.1', ]
 
 
 # DATABASES

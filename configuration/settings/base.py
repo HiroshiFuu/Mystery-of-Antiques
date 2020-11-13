@@ -12,7 +12,10 @@ import environ
 
 
 ROOT_DIR = environ.Path(__file__) - 3  # (Mystery-of-Antiques/configuration/settings/base.py - 3 = Mystery-of-Antiques/)
+PARENT_DIR = ROOT_DIR - 2
 CORE_APP_DIR = ROOT_DIR.path('core')
+GAMEMASTER_APP_DIR = ROOT_DIR.path('apps', 'GameMaster')
+HELPER_APP_DIR = ROOT_DIR.path('apps', 'Helper')
 
 
 # APP CONFIGURATION
@@ -29,11 +32,10 @@ DJANGO_APPS = [
 
     # Useful template tags:
     # 'django.contrib.humanize',
-    'admin_view_permission',
 
     # Admin
     'suit',
-    'suit_redactor',
+    # 'suit_redactor',
     'django.contrib.admin',
     # 'adminsortable2',
 ]
@@ -51,7 +53,7 @@ THIRD_PARTY_APPS = [
 # Apps specific for this project go here.
 LOCAL_APPS = [
     # Your stuff: custom apps go here
-    'apps.MoA',
+    # 'apps.MoA',
     'apps.GameMaster',
     'apps.Helper',
 ]
@@ -130,30 +132,6 @@ DATABASES = {
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 
-# GENERAL CONFIGURATION
-# ------------------------------------------------------------------------------
-# Local time zone for this installation. Choices can be found here:
-# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'Asia/Singapore'
-
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#language-code
-LANGUAGE_CODE = 'en-us'
-
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#site-id
-SITE_ID = 1
-
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#use-i18n
-USE_I18N = True
-
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#use-l10n
-USE_L10N = True
-
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
-USE_TZ = True
-
-
 # TEMPLATE CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#templates
@@ -164,6 +142,7 @@ TEMPLATES = [
         # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
         'DIRS': [
             str(CORE_APP_DIR.path('templates')),
+            str(HELPER_APP_DIR.path('templates')),
             # str(ROOT_DIR.path('apps').path('admin_portal').path('templates')),
         ],
         'OPTIONS': {
@@ -198,7 +177,6 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # STATIC FILE CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-PARENT_DIR = ROOT_DIR - 2
 STATIC_ROOT = str(PARENT_DIR('STATIC_ROOT', 'static'))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
@@ -206,7 +184,8 @@ STATIC_URL = '/static/'
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = [
-    str(ROOT_DIR.path('core', 'static')),
+    str(CORE_APP_DIR.path('static')),
+    str(GAMEMASTER_APP_DIR.path('static')),
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
@@ -274,25 +253,25 @@ AUTH_PASSWORD_VALIDATORS = [
 # ------------------------------------------------------------------------------
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
+    # 'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 # FOR ACCOUNT SETTING
-ACCOUNT_AUTHENTICATION_METHOD = 'username'
+# ACCOUNT_AUTHENTICATION_METHOD = 'username'
 # ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-ACCOUNT_USERNAME_REQUIRED = True
+# ACCOUNT_USERNAME_REQUIRED = True
 # ACCOUNT_EMAIL_MODEL_USERNAME_FIELD = None
-ACCOUNT_EMAIL_REQUIRED = False
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+# ACCOUNT_EMAIL_REQUIRED = False
+# ACCOUNT_EMAIL_VERIFICATION = 'none'
 # ACCOUNT_USER_MODEL_USERNAME_FIELD = 'email'
-ACCOUNT_ALLOW_REGISTRATION = True
-ACCOUNT_UNIQUE_EMAIL = False  # do not asking for unique email address
-LOGIN_URL = 'account_login'
-LOGIN_REDIRECT_URL = '/MysteryOfAntiquesGame/'
+# ACCOUNT_ALLOW_REGISTRATION = True
+# ACCOUNT_UNIQUE_EMAIL = False  # do not asking for unique email address
+# LOGIN_URL = 'account_login'
+# LOGIN_REDIRECT_URL = '/MysteryOfAntiquesGame/'
 
 
 # SLUGLIFIER
-AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
+# AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 
 # Location of root django.contrib.admin URL, use {% url 'admin:index' %}
 ADMIN_URL = r'^admin/'
@@ -310,10 +289,6 @@ EMAIL_USE_TLS = True
 
 # LANGUAGE CONFIGURATION
 # ------------------------------------------------------------------------------
-# If you set this to False, Django will make some optimizations so as not
-# to load the internationalization machinery.
-USE_I18N = True
-
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'zh-Hans'
@@ -324,3 +299,27 @@ LANGUAGES = [
     ('zh-hans', 'Simplified Chinese'),
     ('zh-hant', 'Traditional Chinese'),
 ]
+
+
+# GENERAL CONFIGURATION
+# ------------------------------------------------------------------------------
+# Local time zone for this installation. Choices can be found here:
+# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
+# although not all choices may be available on all operating systems.
+# In a Windows environment this must be set to your system time zone.
+TIME_ZONE = 'Asia/Singapore'
+
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#language-code
+# LANGUAGE_CODE = 'en-us'
+
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#site-id
+SITE_ID = 1
+
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#use-i18n
+USE_I18N = True
+
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#use-l10n
+USE_L10N = True
+
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
+USE_TZ = True
