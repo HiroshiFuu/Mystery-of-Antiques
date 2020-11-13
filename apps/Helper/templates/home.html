@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %} {% endblock %} 
+{% block title %} Home {% endblock %} 
 
 {% block content %}
 		<div class="jumbotron">
 			<h1>Helper App</h1>
 			<p class="lead"></p>
-			<a class="btn btn-lg btn-primary" href="{% url 'Helper:CreateGame' %}" role="button">创建游戏</a>
+			<a class="btn btn-lg btn-primary" href="{% url 'Helper:create_game' %}" role="button">创建游戏</a>
 		</div>
 {% endblock content %}

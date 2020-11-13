@@ -1,0 +1,22 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+
+<body>
+	<form method="POST" action="{% url 'Helper:game' room_id %}" id="fm">
+		{% csrf_token %}
+		<input type="hidden" class="form-control-plaintext" name="room_id" placeholder="00000" value="{{ room_id }}" required>
+	</form>
+	<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+	<script src="{% static 'js/cookie.js' %}"></script>
+	<script type="text/javascript">
+	$(function() {
+		$("#fm").submit();
+	});
+	</script>
+</body>
+
+</html>
