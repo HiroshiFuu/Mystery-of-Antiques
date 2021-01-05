@@ -1,0 +1,205 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>Mystery of Antiques</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- <link rel="apple-touch-icon" href="apple-touch-icon.png"> -->
+	<link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+	<link rel="stylesheet" href="{% static 'css/radioselector.css' %}">
+	<style type="text/css">
+	img.js-avatar-me {
+		margin: 15px 10px 15px 10px;
+	}
+
+	input[type='radio'] {
+		display: none;
+	}
+
+	.dim {
+		opacity: .4;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 9;
+		background-color: rgba(0, 0, 0, 0.3); /*dim the background*/
+	}
+	</style>
+</head>
+
+<body>
+	<main role="main" class="container">
+		你是{{ me.get_color_display }}色玩家！ <br /> 房间号：{{ room_id }} <br /> 玩家ID：{{ me.player_code }}
+		<form>
+			{% for zodiac in game.zodiacs.all %}
+			{% if forloop.counter0|divisibleby:4 %}
+			<div class="form-group row">
+				<div class="btn-group btn-group-toggle" data-toggle="buttons">
+					<ul>
+			{% endif %}
+						<li class="btn btn-light">
+							<input type="radio" name="options" id="option{{ forloop.counter }}" autocomplete="off">
+							<img src="{{ zodiac.zodiac_image.image.url }}" alt="{{ zodiac.genuine }}" class="-avatar js-avatar-me">
+						</li>
+			{% if forloop.counter|divisibleby:4 %}
+					</ul>
+				</div>
+			</div>
+			{% endif %}
+			{% endfor %}
+			<div class="form-group row">
+				<label for="genuine" class="offset-sm-1 col-form-label">Check genuine:</label>
+				<div class="col-sm-2">
+					<input type="text" class="form-control" id="genuine">
+				</div>
+			</div>
+			<div class="form-group row">
+				{% for player in game.players.all %}
+				<div class="card" style="width: 150px; margin: 0px 10px;">
+					<div class="card-body">
+						<label class="radioMethod">
+							<div class="method {% if player.color == 'Black' %} character-white {% else %} character {% endif %}" style="background-color: {{ player.color }}"></div>
+						</label>
+						<h5 class="card-title" style="color: {{ player.color }};">{{ player.name }}</h5>
+						{% if forloop.first and player.color == me.color %}
+						<h6 class="card-subtitle mb-2 text-muted">请行动</h6>
+						<!-- <p class="card-text">请选择下一位行动的玩家</p> -->
+						{% else %}
+						<h6 class="card-subtitle mb-2 text-muted">请等待</h6>
+						{% endif %}
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+			<div id="player_sequence" class="form-group row" style="display: none;">
+				<div class="radioWrap">
+					<div class="btn-group radioBtnGroup btn-group-justified" data-toggle="buttons">
+						{% for player in game.players.all %}
+						<label class="btn radioMethod sequence {% if player.pk == me.pk %}dim{% endif %}" data-color="{{ player.color }}">
+							<div class="method {% if player.color == 'Black' %} character-white {% else %} character {% endif %}" style="background-color: {{ player.color }}"></div>
+							<input type="radio" name="players_sequence" {% if player.pk == me.pk %}disabled{% endif %}>
+						</label>
+					{% if forloop.counter == 4 %}
+					</div>
+					<div class="btn-group radioBtnGroup btn-group-justified" data-toggle="buttons">
+					{% endif %}
+					{% endfor %}
+					</div>
+				</div>
+			</div>
+			<!-- <div id="zodiac_investigate" class="form-group row">
+				<div class="btn-group btn-group-toggle" data-toggle="buttons">
+					<ul>
+						<li class="btn btn-light">
+							<input type="radio" name="option{{ forloop.counter }}" id="option{{ forloop.counter }}" autocomplete="off">
+							<img src="{{ zodiac.zodiac_image.image.url }}" alt="{{ zodiac.genuine }}" class="-avatar js-avatar-me">
+						</li>
+					</ul>
+				</div>
+			</div> -->
+		</form>
+	</main>
+	<form id="fm" method="POST" action="">
+		{% csrf_token %}
+		<input type="hidden" class="form-control-plaintext" name="room_id" value="{{ room_id }}" required>
+	</form>
+	<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+	<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/cookie.js' %}"></script>
+	<script type="text/javascript">
+	String.prototype.format = function () {
+		var args = arguments;
+		return this.replace(/\{(\d+)\}/g, function (m, n) { return args[n]; });
+	};
+	$(function() {
+		$("img").click(function() {
+			console.log($(this).attr("alt"));
+			if ($(this).attr("alt") === "True")
+				$("#genuine").val("真");
+			if ($(this).attr("alt") === "False")
+				$("#genuine").val("伪");
+		})
+		setInterval(function() {
+			$.ajaxSetup({
+				beforeSend: function(xhr, settings) {
+					if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					}
+				}
+			});
+			$.ajax({
+				url: "{% url 'MoA:GetNextPlay' %}",
+				type: "POST",
+				data: {
+					"player_code": "{{ me.player_code }}",
+					"room_id": "{{ room_id }}",
+				},
+				statusCode: {
+					201: function(response) {
+						// To-Do: dynamic generation
+						// console.log(response);
+						var start_speech = true;
+						response.forEach(function(player) {
+							if (player.fields.sequence < {{ me.sequence }}) {
+								var label = $("label[data-color={0}]".format(player.fields.color))
+								label.addClass("dim");
+								label.children("input").prop('disabled', true);
+							}
+							else {
+								if (player.fields.sequence > {{ me.sequence }})
+									start_speech = false;
+							}
+						});
+						$("#player_sequence").css("display", "");
+						if (start_speech) {
+							setTimeout(function() {
+								$.ajax({
+									url: "{% url 'MoA:StartBB' %}",
+									type: "POST",
+									data: {
+										"room_id": "{{ room_id }}",
+									},
+									success: function(result) {
+										// alert(result);
+										$("#player_sequence").css("display", "none");
+									}
+								});
+							}, 5000);
+						}
+					}
+				}, success: function(result) {
+					
+				},
+			});
+		}, 3000);
+		$("label.sequence").click(function() {
+			// console.log($(this).data("color"));
+			if (!$(this).prop('disabled')) {
+				$.ajax({
+					url: "{% url 'MoA:SetNextPlayer' %}",
+					type: "POST",
+					data: {
+						"player_code": "{{ me.player_code }}",
+						"color": $(this).data("color"),
+					},
+					success: function(result) {
+						// alert(result);
+						setTimeout(function() {
+							$("#player_sequence").css("display", "none");
+						}, 500);
+					}
+				});
+			}
+		});
+	});
+	</script>
+</body>
+
+</html>
